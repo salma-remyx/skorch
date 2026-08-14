@@ -7,6 +7,7 @@ submodule.
 # pylint: disable=wildcard-import
 
 from .base import *
+from .interactive import *
 from .logging import *
 from .regularization import *
 from .scoring import *
@@ -25,6 +26,7 @@ __all__ = [
     'GradientNormClipping',
     'Initializer',
     'InputShapeSetter',
+    'InteractiveTraining',
     'LRScheduler',
     'LoadInitState',
     'MlflowLogger',
