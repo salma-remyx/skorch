@@ -41,6 +41,7 @@ from skorch.exceptions import NotInitializedError
 from skorch.exceptions import SkorchAttributeError
 from skorch.exceptions import SkorchTrainingImpossibleError
 from skorch.history import History
+from skorch.schedule_free import set_optimizer_mode
 from skorch.setter import format_param_group_msg
 from skorch.setter import optimizer_setter
 from skorch.utils import _TorchLoadUnpickler
@@ -960,7 +961,8 @@ class NeuralNet(BaseEstimator):
 
     def _set_training(self, training=True):
         """Set training/evaluation mode on all modules and criteria that are torch
-        Modules.
+        Modules, and on optimizers that support a training/evaluation
+        mode (e.g. schedule-free optimizers).
 
         Parameters
         ----------
@@ -972,6 +974,27 @@ class NeuralNet(BaseEstimator):
             module = getattr(self, module_name + '_')
             if isinstance(module, torch.nn.Module):
                 module.train(training)
+        self._set_optimizer_training(training)
+
+    def _set_optimizer_training(self, training):
+        """Set training/evaluation mode on optimizers that support it.
+
+        Optimizers like the schedule-free ones from "The Road Less
+        Scheduled" (https://arxiv.org/abs/2405.15682) expose ``train()``
+        and ``eval()`` methods. Just like torch modules, they need to be
+        in eval mode when evaluating or predicting. For all other
+        optimizers, this is a no-op.
+
+        Parameters
+        ----------
+        training : bool
+          Whether to set the optimizer(s) to training mode (True) or
+          evaluation mode (False).
+
+        """
+        for name in self._optimizers:
+            optimizer = getattr(self, name + '_')
+            set_optimizer_mode(optimizer, training)
 
     def validation_step(self, batch, **fit_params):
         """Perform a forward step using batched data and return the
