@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `skorch.callbacks.InteractiveTraining` callback that consults a
+  user-supplied controller at each batch or epoch end and applies its
+  returned interventions (`set_knob`, `stop`, `checkpoint`).
 - Add `device='auto'` to select hardware acceleration like CUDA when
   available, and CPU otherwise.
 
