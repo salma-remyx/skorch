@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `device='auto'` to select hardware acceleration like CUDA when
   available, and CPU otherwise.
+- Optimizers that have their own train/eval mode, such as schedule-free
+  optimizers, now have that mode set automatically whenever the module's
+  mode is set. Before, validation scores and checkpoints were computed at
+  the gradient point instead of the averaged iterate for such optimizers.
 
 ### Changed
 

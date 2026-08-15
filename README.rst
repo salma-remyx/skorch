@@ -125,6 +125,7 @@ skorch also provides many convenient features, among others:
 - `Automatic inference of CLI parameters <https://github.com/skorch-dev/skorch/tree/master/examples/cli>`_
 - `Integration with GPyTorch for Gaussian Processes <https://skorch.readthedocs.io/en/latest/user/probabilistic.html>`_
 - `Integration with Hugging Face 🤗 <https://skorch.readthedocs.io/en/stable/user/huggingface.html>`_
+- Optimizers with their own train/eval mode, e.g. schedule-free ones, are switched automatically alongside the module
 
 ============
 Installation

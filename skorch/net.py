@@ -41,6 +41,7 @@ from skorch.exceptions import NotInitializedError
 from skorch.exceptions import SkorchAttributeError
 from skorch.exceptions import SkorchTrainingImpossibleError
 from skorch.history import History
+from skorch.optimizer_mode import set_optimizer_mode
 from skorch.setter import format_param_group_msg
 from skorch.setter import optimizer_setter
 from skorch.utils import _TorchLoadUnpickler
@@ -962,6 +963,12 @@ class NeuralNet(BaseEstimator):
         """Set training/evaluation mode on all modules and criteria that are torch
         Modules.
 
+        Optimizers that distinguish a training from an evaluation mode
+        themselves, such as schedule-free optimizers, are switched as well.
+        This is required because they evaluate gradients at a different
+        iterate than the one used for validation and prediction. Optimizers
+        without that distinction, e.g. SGD or Adam, are not affected.
+
         Parameters
         ----------
         training : bool (default=True)
@@ -972,6 +979,9 @@ class NeuralNet(BaseEstimator):
             module = getattr(self, module_name + '_')
             if isinstance(module, torch.nn.Module):
                 module.train(training)
+        for optimizer_name in self._optimizers:
+            optimizer = getattr(self, optimizer_name + '_')
+            set_optimizer_mode(optimizer, training)
 
     def validation_step(self, batch, **fit_params):
         """Perform a forward step using batched data and return the
@@ -1089,6 +1099,10 @@ class NeuralNet(BaseEstimator):
         """
         for name in self._optimizers:
             optimizer = getattr(self, name + '_')
+            # Must happen before the step call, not inside the closure: the
+            # optimizer's step may refuse to run in evaluation mode, and the
+            # closure is only invoked by optimizers that use one.
+            set_optimizer_mode(optimizer, True)
             if step_fn is None:
                 optimizer.step()
             else:
