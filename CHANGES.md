@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `device='auto'` to select hardware acceleration like CUDA when
   available, and CPU otherwise.
+- Add `ScheduleFreeAdamW`, an AdamW variant that needs no learning rate
+  schedule, and the `ScheduleFreeMode` callback that switches it between
+  train and eval mode.
 
 ### Changed
 

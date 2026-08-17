@@ -15,6 +15,7 @@ skorch
    net
    probabilistic
    regressor
+   schedule_free
    scoring
    toy
    utils

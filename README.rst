@@ -117,6 +117,7 @@ With `grid search <https://scikit-learn.org/stable/modules/generated/sklearn.mod
 skorch also provides many convenient features, among others:
 
 - `Learning rate schedulers <https://skorch.readthedocs.io/en/stable/callbacks.html#skorch.callbacks.LRScheduler>`_ (Warm restarts, cyclic LR and many more)
+- `Schedule-free optimization <https://skorch.readthedocs.io/en/stable/schedule_free.html#skorch.schedule_free.ScheduleFreeAdamW>`_ (AdamW without a learning rate schedule)
 - `Scoring using sklearn (and custom) scoring functions <https://skorch.readthedocs.io/en/stable/callbacks.html#skorch.callbacks.EpochScoring>`_
 - `Early stopping <https://skorch.readthedocs.io/en/stable/callbacks.html#skorch.callbacks.EarlyStopping>`_
 - `Checkpointing <https://skorch.readthedocs.io/en/stable/callbacks.html#skorch.callbacks.Checkpoint>`_

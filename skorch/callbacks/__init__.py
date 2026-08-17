@@ -8,6 +8,7 @@ submodule.
 
 from .base import *
 from .logging import *
+from .optimizer_mode import *
 from .regularization import *
 from .scoring import *
 from .training import *
@@ -36,6 +37,7 @@ __all__ = [
     'TrainEndCheckpoint',
     'TensorBoard',
     'SacredLogger',
+    'ScheduleFreeMode',
     'Unfreezer',
     'WandbLogger',
     'WarmRestartLR',
