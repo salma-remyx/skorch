@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Support schedule-free optimizers (e.g. from the
+  [schedulefree](https://github.com/facebookresearch/schedule_free)
+  package): `_set_training` now also switches optimizers that define
+  `train`/`eval` methods to the matching mode, and the new
+  `skorch.callbacks.ScheduleFreeMode` callback guards against combining
+  such an optimizer with an `LRScheduler`.
+
 - Add `device='auto'` to select hardware acceleration like CUDA when
   available, and CPU otherwise.
 

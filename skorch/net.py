@@ -962,6 +962,10 @@ class NeuralNet(BaseEstimator):
         """Set training/evaluation mode on all modules and criteria that are torch
         Modules.
 
+        Optimizers that define their own ``train``/``eval`` methods (e.g.
+        schedule-free optimizers) are switched as well, since those expect to
+        be told about the same train/eval transitions as the module.
+
         Parameters
         ----------
         training : bool (default=True)
@@ -972,6 +976,16 @@ class NeuralNet(BaseEstimator):
             module = getattr(self, module_name + '_')
             if isinstance(module, torch.nn.Module):
                 module.train(training)
+
+        for optimizer_name in self._optimizers:
+            optimizer = getattr(self, optimizer_name + '_', None)
+            if optimizer is None:
+                # e.g. after trim_for_prediction
+                continue
+            method_name = 'train' if training else 'eval'
+            method = getattr(optimizer, method_name, None)
+            if callable(method):
+                method()
 
     def validation_step(self, batch, **fit_params):
         """Perform a forward step using batched data and return the
