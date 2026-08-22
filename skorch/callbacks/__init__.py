@@ -7,6 +7,7 @@ submodule.
 # pylint: disable=wildcard-import
 
 from .base import *
+from .indicator_correlation import *
 from .logging import *
 from .regularization import *
 from .scoring import *
@@ -23,6 +24,7 @@ __all__ = [
     'EpochTimer',
     'Freezer',
     'GradientNormClipping',
+    'IndicatorCorrelationStopping',
     'Initializer',
     'InputShapeSetter',
     'LRScheduler',
