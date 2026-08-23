@@ -41,6 +41,7 @@ from skorch.exceptions import NotInitializedError
 from skorch.exceptions import SkorchAttributeError
 from skorch.exceptions import SkorchTrainingImpossibleError
 from skorch.history import History
+from skorch.optimizer_mode import set_optimizer_mode
 from skorch.setter import format_param_group_msg
 from skorch.setter import optimizer_setter
 from skorch.utils import _TorchLoadUnpickler
@@ -962,6 +963,10 @@ class NeuralNet(BaseEstimator):
         """Set training/evaluation mode on all modules and criteria that are torch
         Modules.
 
+        Optimizers that support mode switching (e.g. schedule-free
+        optimizers like ``AdamWScheduleFree``) are toggled as well, since
+        they evaluate at a different iterate than they train at.
+
         Parameters
         ----------
         training : bool (default=True)
@@ -972,6 +977,10 @@ class NeuralNet(BaseEstimator):
             module = getattr(self, module_name + '_')
             if isinstance(module, torch.nn.Module):
                 module.train(training)
+
+        for optimizer_name in self._optimizers:
+            optimizer = getattr(self, optimizer_name + '_')
+            set_optimizer_mode(optimizer, training)
 
     def validation_step(self, batch, **fit_params):
         """Perform a forward step using batched data and return the
