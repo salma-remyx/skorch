@@ -962,6 +962,12 @@ class NeuralNet(BaseEstimator):
         """Set training/evaluation mode on all modules and criteria that are torch
         Modules.
 
+        Optimizers that are themselves stateful with respect to the
+        train/eval distinction -- e.g. the schedule-free optimizers of
+        :mod:`skorch.schedule_free`, which exchange their gradient and
+        evaluation weights -- are switched as well, if they expose a
+        ``train`` method.
+
         Parameters
         ----------
         training : bool (default=True)
@@ -972,6 +978,14 @@ class NeuralNet(BaseEstimator):
             module = getattr(self, module_name + '_')
             if isinstance(module, torch.nn.Module):
                 module.train(training)
+
+        for optimizer_name in self._optimizers:
+            optimizer = getattr(self, optimizer_name + '_', None)
+            # plain torch optimizers don't have a .train method, only
+            # stateful ones like the schedule-free optimizers do
+            train_method = getattr(optimizer, 'train', None)
+            if callable(train_method):
+                train_method(training)
 
     def validation_step(self, batch, **fit_params):
         """Perform a forward step using batched data and return the

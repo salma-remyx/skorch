@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `skorch.schedule_free` with `SGDScheduleFree` and
+  `AdamWScheduleFree`, optimizers that do not need a learning rate
+  schedule. `NeuralNet._set_training` now also switches optimizers that
+  expose a `train` method between train and eval mode, which these
+  optimizers require to exchange their gradient and evaluation weights.
 - Add `device='auto'` to select hardware acceleration like CUDA when
   available, and CPU otherwise.
 
