@@ -12,6 +12,7 @@ from .regularization import *
 from .scoring import *
 from .training import *
 from .lr_scheduler import *
+from .schedule_free import *
 
 
 __all__ = [
@@ -33,6 +34,7 @@ __all__ = [
     'PassthroughScoring',
     'PrintLog',
     'ProgressBar',
+    'ScheduleFree',
     'TrainEndCheckpoint',
     'TensorBoard',
     'SacredLogger',

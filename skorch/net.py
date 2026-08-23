@@ -962,6 +962,12 @@ class NeuralNet(BaseEstimator):
         """Set training/evaluation mode on all modules and criteria that are torch
         Modules.
 
+        Optimizers that differentiate between training and evaluation,
+        like schedule-free optimizers, are switched as well. This
+        matters because such optimizers evaluate at a different point
+        of the trajectory than they train at; without this, validation
+        losses and checkpoints would be computed on the training point.
+
         Parameters
         ----------
         training : bool (default=True)
@@ -972,6 +978,31 @@ class NeuralNet(BaseEstimator):
             module = getattr(self, module_name + '_')
             if isinstance(module, torch.nn.Module):
                 module.train(training)
+        self._set_optimizer_training(training)
+
+    def _set_optimizer_training(self, training=True):
+        """Set training/evaluation mode on optimizers that support it.
+
+        Most optimizers don't distinguish the two, but schedule-free
+        optimizers do: they train on the "z" sequence yet evaluate on
+        the averaged "x" sequence, and expose that switch through
+        ``optimizer.train()``/``optimizer.eval()``. Since optimizers are
+        not torch Modules, they need to be toggled separately.
+
+        Parameters
+        ----------
+        training : bool (default=True)
+          Whether to set the optimizer(s) to training mode (True) or
+          evaluation mode (False).
+
+        """
+        for name in self._optimizers:
+            optimizer = getattr(self, name + '_', None)
+            if optimizer is None:
+                continue
+            method = getattr(optimizer, 'train' if training else 'eval', None)
+            if callable(method):
+                method()
 
     def validation_step(self, batch, **fit_params):
         """Perform a forward step using batched data and return the
