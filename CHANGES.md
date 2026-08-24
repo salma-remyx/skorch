@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `device='auto'` to select hardware acceleration like CUDA when
   available, and CPU otherwise.
+- Optimizers that have a training/evaluation mode of their own, e.g. the
+  schedule-free ones from the `schedulefree` package, now have that mode set
+  by the net along with the modules' (see `skorch.schedule_free`).
 
 ### Changed
 

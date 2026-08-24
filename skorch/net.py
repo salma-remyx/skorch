@@ -41,6 +41,7 @@ from skorch.exceptions import NotInitializedError
 from skorch.exceptions import SkorchAttributeError
 from skorch.exceptions import SkorchTrainingImpossibleError
 from skorch.history import History
+from skorch.schedule_free import set_optimizer_training
 from skorch.setter import format_param_group_msg
 from skorch.setter import optimizer_setter
 from skorch.utils import _TorchLoadUnpickler
@@ -959,8 +960,14 @@ class NeuralNet(BaseEstimator):
         pass
 
     def _set_training(self, training=True):
-        """Set training/evaluation mode on all modules and criteria that are torch
-        Modules.
+        """Set training/evaluation mode on all modules, criteria and
+        optimizers that support it.
+
+        Modules and criteria are torch Modules and thus always support
+        training/evaluation mode. Optimizers normally don't, but some do --
+        most notably the schedule-free ones, which evaluate at a different
+        point of their schedule than they train at. Those are switched too;
+        see :mod:`skorch.schedule_free` for details.
 
         Parameters
         ----------
@@ -972,6 +979,10 @@ class NeuralNet(BaseEstimator):
             module = getattr(self, module_name + '_')
             if isinstance(module, torch.nn.Module):
                 module.train(training)
+
+        for optimizer_name in self._optimizers:
+            optimizer = getattr(self, optimizer_name + '_', None)
+            set_optimizer_training(optimizer, training)
 
     def validation_step(self, batch, **fit_params):
         """Perform a forward step using batched data and return the
