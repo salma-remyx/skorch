@@ -1,0 +1,1 @@
+[{"batches": [{"train_loss": 0.28777173161506653, "train_batch_size": 8}, {"valid_loss": 0.276375949382782, "valid_batch_size": 2}], "epoch": 1, "train_batch_count": 1, "valid_batch_count": 1, "dur": 0.000865936279296875, "train_loss": 0.28777173161506653, "train_loss_best": true, "valid_loss": 0.276375949382782, "valid_loss_best": true, "event_cp": true}]
